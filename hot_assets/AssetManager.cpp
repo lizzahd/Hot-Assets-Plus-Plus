@@ -20,6 +20,16 @@ AssetManager::AssetManager(const std::string &rootDirectory) {
         m_textures.emplace(path.stem().string(), LoadTexture(path.string().c_str()));
     }
 
+    // Load Shaders
+    for (const auto& entry : fs::directory_iterator(rootDirectory + "/assets/shaders/")) {
+        fs::path path = entry.path();
+        if (path.extension() != ".frag") {
+            continue;
+        }
+
+        m_shaders.emplace(path.stem().string(), LoadShader(nullptr, path.string().c_str()));
+    }
+
     // Load Sounds
     for (const auto& entry : fs::directory_iterator(rootDirectory + "/assets/sounds/")) {
         fs::path path = entry.path();
@@ -87,6 +97,10 @@ void AssetManager::drawCell(const std::string &tilesetName, const int cellIndex,
 
 void AssetManager::drawCell(const std::string &tilesetName, const int cellIndex, const raylib::Vector2 pos, const raylib::Color color) {
     drawCell(tilesetName, cellIndex, pos, {0, 0}, color);
+}
+
+raylib::Shader &AssetManager::getShader(const std::string &name) {
+    return m_shaders[name];
 }
 
 void AssetManager::playSound(const std::string& name) {
