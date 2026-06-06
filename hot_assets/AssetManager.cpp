@@ -74,7 +74,7 @@ void AssetManager::drawCell(const std::string &tilesetName, const int cellIndex,
     const auto &tex = getTex(texName);
     const float sX = cellIndex % static_cast<int>(tex.width / cellSize.x);
     const float sY = cellIndex / static_cast<int>(tex.height / cellSize.y);
-    const raylib::Rectangle src{sX, sY, cellSize.x, cellSize.y};
+    const raylib::Rectangle src{sX * cellSize.x, sY * cellSize.y, cellSize.x, cellSize.y};
     const raylib::Rectangle dst{pos, size};
     tex.Draw(
         src,
