@@ -61,6 +61,34 @@ raylib::Texture2D &AssetManager::getTex(const std::string& name) {
     return m_textures[name];
 }
 
+void AssetManager::createTileset(std::string name, const std::string &texName, const raylib::Vector2 cellSize) {
+    m_tilesets.insert({name, {texName, cellSize}});
+}
+
+void AssetManager::drawCell(const std::string &tilesetName, const int cellIndex, const raylib::Vector2 pos, raylib::Vector2 size, const raylib::Color color) {
+    const auto &[texName, cellSize] = m_tilesets[tilesetName];
+    if (size.x <= 0 || size.y <= 0) {
+        size = cellSize;
+    }
+
+    const auto &tex = getTex(texName);
+    const float sX = cellIndex % static_cast<int>(tex.width / cellSize.x);
+    const float sY = cellIndex / static_cast<int>(tex.height / cellSize.y);
+    const raylib::Rectangle src{sX, sY, cellSize.x, cellSize.y};
+    const raylib::Rectangle dst{pos, size};
+    tex.Draw(
+        src,
+        dst,
+        {0, 0},
+        0,
+        color
+    );
+}
+
+void AssetManager::drawCell(const std::string &tilesetName, const int cellIndex, const raylib::Vector2 pos, const raylib::Color color) {
+    drawCell(tilesetName, cellIndex, pos, {0, 0}, color);
+}
+
 void AssetManager::playSound(const std::string& name) {
     for (const auto& alias : m_soundAliases[name]) {
         if (!IsSoundPlaying(alias)) {
