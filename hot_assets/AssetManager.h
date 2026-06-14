@@ -27,9 +27,6 @@ public:
     void drawCell(const std::string &tilesetName, int cellIndex, raylib::Vector2 pos, raylib::Color color);
 
     raylib::Shader& getShader(const std::string& name);
-    void setShaderValue(const std::string &name, const std::string &propertyName, const void *value, int uniformType);
-    void setShaderValue(const std::string &name, const ShaderArg &shaderArg);
-    void beginShaderMode(const std::string &name, std::initializer_list<ShaderArg> args);
 
     void playSound(const std::string& name);
 

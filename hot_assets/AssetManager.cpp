@@ -103,26 +103,6 @@ raylib::Shader &AssetManager::getShader(const std::string &name) {
     return m_shaders[name];
 }
 
-void AssetManager::setShaderValue(const std::string &name, const std::string &propertyName, const void *value, const int uniformType) {
-    auto &shader = getShader(name);
-    const auto loc = shader.GetLocation(propertyName);
-    shader.SetValue(loc, value, uniformType);
-}
-
-void AssetManager::setShaderValue(const std::string &name, const ShaderArg &shaderArg) {
-    setShaderValue(name, std::get<0>(shaderArg), std::get<1>(shaderArg), std::get<2>(shaderArg));
-}
-
-void AssetManager::beginShaderMode(const std::string &name, const std::initializer_list<ShaderArg> args) {
-    const auto &shader = getShader(name);
-
-    for (const auto &arg : args) {
-        setShaderValue(name, arg);
-    }
-
-    BeginShaderMode(shader);
-}
-
 void AssetManager::playSound(const std::string& name) {
     for (const auto& alias : m_soundAliases[name]) {
         if (!IsSoundPlaying(alias)) {
