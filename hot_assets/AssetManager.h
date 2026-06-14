@@ -14,6 +14,8 @@ struct Tileset {
     raylib::Vector2 m_cellSize;
 };
 
+using ShaderArg = std::tuple<const std::string &, const void *, const int>;
+
 class AssetManager {
 public:
     explicit AssetManager(const std::string &rootDirectory);
@@ -23,7 +25,11 @@ public:
     void createTileset(std::string name, const std::string &texName, raylib::Vector2 cellSize);
     void drawCell(const std::string &tilesetName, int cellIndex, raylib::Vector2 pos, raylib::Vector2 size, raylib::Color color);
     void drawCell(const std::string &tilesetName, int cellIndex, raylib::Vector2 pos, raylib::Color color);
+
     raylib::Shader& getShader(const std::string& name);
+    void setShaderValue(const std::string &name, const std::string &propertyName, const void *value, int uniformType);
+    void setShaderValue(const std::string &name, const ShaderArg &shaderArg);
+    void beginShaderMode(const std::string &name, std::initializer_list<ShaderArg> args);
 
     void playSound(const std::string& name);
 
