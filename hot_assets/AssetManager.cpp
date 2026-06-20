@@ -9,46 +9,6 @@
 
 namespace fs = std::filesystem;
 
-AssetManager::AssetManager(const std::string &rootDirectory) {
-    // Load Textures
-    for (const auto& entry : fs::directory_iterator(rootDirectory + "/assets/textures/")) {
-        fs::path path = entry.path();
-        if (path.extension() != ".png") {
-            continue;
-        }
-
-        m_textures.emplace(path.stem().string(), LoadTexture(path.string().c_str()));
-    }
-
-    // Load Shaders
-    for (const auto& entry : fs::directory_iterator(rootDirectory + "/assets/shaders/")) {
-        fs::path path = entry.path();
-        if (path.extension() != ".frag") {
-            continue;
-        }
-
-        m_shaders.emplace(path.stem().string(), LoadShader(nullptr, path.string().c_str()));
-    }
-
-    // Load Sounds
-    for (const auto& entry : fs::directory_iterator(rootDirectory + "/assets/sounds/")) {
-        fs::path path = entry.path();
-        if (path.extension() != ".wav") {
-            continue;
-        }
-
-        // Sound
-        std::string key = path.stem().string();
-        m_sounds.emplace(key, LoadSound(path.string().c_str()));
-
-        // Sound Alias
-        auto& aliases = m_soundAliases[key];
-        for (int i = 0; i < m_soundAliasCount; i++) {
-            aliases.push_back(LoadSoundAlias(m_sounds[key]));
-        }
-    }
-}
-
 AssetManager::~AssetManager() {
     // Unload textures
     for (const auto &tex: m_textures | std::views::values) {
@@ -65,13 +25,59 @@ AssetManager::~AssetManager() {
     for (const auto& sound : m_sounds | std::views::values) {
         UnloadSound(sound);
     }
+
+    for (const auto &shader : m_shaders | std::views::values) {
+        UnloadShader(shader);
+    }
+}
+
+void AssetManager::loadTextures(const std::string &directory) {
+    for (const auto& entry : fs::directory_iterator(directory)) {
+        const fs::path& path = entry.path();
+        if (path.extension() != ".png") {
+            continue;
+        }
+
+        m_textures.emplace(path.stem().string(), LoadTexture(path.string().c_str()));
+    }
+}
+
+void AssetManager::loadSounds(const std::string &directory) {
+    // Load Sounds
+    for (const auto& entry : fs::directory_iterator(directory)) {
+        const fs::path& path = entry.path();
+        if (path.extension() != ".wav") {
+            continue;
+        }
+
+        // Sound
+        std::string key = path.stem().string();
+        m_sounds.emplace(key, LoadSound(path.string().c_str()));
+
+        // Sound Alias
+        auto& aliases = m_soundAliases[key];
+        for (int i = 0; i < m_soundAliasCount; i++) {
+            aliases.push_back(LoadSoundAlias(m_sounds[key]));
+        }
+    }
+}
+
+void AssetManager::loadShaders(const std::string &directory) {
+    for (const auto& entry : fs::directory_iterator(directory)) {
+        const fs::path& path = entry.path();
+        if (path.extension() != ".frag") {
+            continue;
+        }
+
+        m_shaders.emplace(path.stem().string(), LoadShader(nullptr, path.string().c_str()));
+    }
 }
 
 raylib::Texture2D &AssetManager::getTex(const std::string& name) {
     return m_textures[name];
 }
 
-void AssetManager::createTileset(std::string name, const std::string &texName, const raylib::Vector2 cellSize) {
+void AssetManager::createTileset(const std::string& name, const std::string &texName, const raylib::Vector2 cellSize) {
     m_tilesets.insert({name, {texName, cellSize}});
 }
 

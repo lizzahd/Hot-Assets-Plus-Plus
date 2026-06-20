@@ -18,11 +18,15 @@ using ShaderArg = std::tuple<const std::string &, const void *, const int>;
 
 class AssetManager {
 public:
-    explicit AssetManager(const std::string &rootDirectory);
+    AssetManager() = default;
     ~AssetManager();
 
+    void loadTextures(const std::string &directory);
+    void loadSounds(const std::string &directory);
+    void loadShaders(const std::string &directory);
+
     raylib::Texture2D& getTex(const std::string& name);
-    void createTileset(std::string name, const std::string &texName, raylib::Vector2 cellSize);
+    void createTileset(const std::string& name, const std::string &texName, raylib::Vector2 cellSize);
     void drawCell(const std::string &tilesetName, int cellIndex, raylib::Vector2 pos, raylib::Vector2 size, raylib::Color color);
     void drawCell(const std::string &tilesetName, int cellIndex, raylib::Vector2 pos, raylib::Color color);
 
