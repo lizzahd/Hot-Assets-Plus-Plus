@@ -25,10 +25,6 @@ AssetManager::~AssetManager() {
     for (const auto& sound : m_sounds | std::views::values) {
         UnloadSound(sound);
     }
-
-    for (const auto &shader : m_shaders | std::views::values) {
-        UnloadShader(shader);
-    }
 }
 
 void AssetManager::loadTextures(const std::string &directory) {
